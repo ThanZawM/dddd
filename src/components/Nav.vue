@@ -37,11 +37,11 @@
     </div>
     <div>
       <v-btn text @click="clickLogin(true)"
-        ><v-icon icon="mdi:mdi-login" color="#F9423A" size="20" />Log In</v-btn
+        ><v-icon icon="mdi:mdi-login" color="#F9423A" size="20" />Log Out</v-btn
       >
-      <v-btn text @click="clickLogin(false)"
+      <!-- <v-btn text @click="clickLogin(false)"
         ><v-icon icon="mdi:mdi-account" color="#F9423A" size="20" />Sing Up</v-btn
-      >
+      > -->
     </div>
   </v-app-bar>
   <Login :showDialog="dialog" :isLogin="login" @close="closeDialog()" @loginClick="textClick()" />

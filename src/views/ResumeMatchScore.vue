@@ -3,6 +3,11 @@
     <!-- <v-row justify="center">
       <h2 style="font-size: 2rem;">Resume Match Score</h2>
     </v-row> -->
+    <v-row justify="start" class="my-5">
+      <v-btn @click="goToDashboard()"
+        ><v-icon  icon="mdi:mdi-view-dashboard-outline" color="var(--red-color)" size="20" />Dashboard</v-btn
+      >
+    </v-row>
     <v-row justify="center">
       <v-card variant="elevated" color="#d3d3d3" style="margin-top: 32px">
         <v-card-title style="font-size: 1.5rem; font-weight: 600"
@@ -21,14 +26,19 @@
               <span style="color: black; font-size: 4rem; font-weight: 500">{{ value }}%</span>
             </v-progress-circular>
           </v-col>
-          <v-col cols="6" class="details">
+          <v-col v-if="checkSevenFive" cols="6" class="details">
+            <h3 style="text-transform: uppercase; font-size: 2rem; color: var(--red-color)">Great Start!</h3>
+            <p>You are already good candidate for this position. Your resume is perfect.</p>
+          </v-col>
+          <v-col v-else cols="6" class="details">
             <h3 style="text-transform: uppercase; font-size: 2rem; color: var(--red-color)">Great Start!</h3>
             <p>You'll be good candidate for this position if you update your resume.</p>
             <p>
-              Review the recommendations below for the form the formatting, keywords, the best
-              practices you need to get that interview.
+              Review the recommendations below.
             </p>
-            <p>Then scan your updated resume to make sure you score 75% or higher.</p>
+            <p>
+              {{ weakness }}
+            </p>
           </v-col>
         </v-row>
       </v-card>
@@ -40,9 +50,38 @@
 export default {
   data() {
     return {
-      value: 60
+      // value: 60
     }
-  }
+  },
+  methods: {
+    goToDashboard() {
+      this.$router.push({ name: 'dashboard' })
+    }
+  },
+  computed: {
+    value() {
+      let val = 50;
+      let obj = localStorage.getItem('resumeScorePercent');
+      if(obj) {
+        val = obj;
+        console.log('val == ' + typeof val )
+      }
+      return val;
+    },
+    weakness() {
+      let weak = localStorage.getItem('weakness')
+      if(weak) {
+        return weak;
+      }
+      return 'Your resume is already fine.'
+    },
+    checkSevenFive() {
+      if(parseInt(this.value) >= 75) {
+        return true;
+      }
+      return false;
+    }
+  },
 }
 </script>
 

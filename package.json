@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "apexcharts": "^3.42.0",
+    "axios": "^1.5.1",
+    "pdfjs-dist": "^2.16.105",
     "pinia": "^2.1.4",
     "vue": "^3.3.4",
     "vue-router": "^4.2.4",

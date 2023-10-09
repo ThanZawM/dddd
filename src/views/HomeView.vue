@@ -45,7 +45,11 @@
                 color="var(--blue-color)"
                 label="Upload Resume"
                 prepend-icon="mdi:mdi-paperclip"
+                accept="application/pdf, image/png"
                 style="color: var(--blue-color)"
+                v-model="resumeFile"
+                ref="fieldAdd"
+                @change="convertBinary"
               >
               </v-file-input>
               <!-- <v-btn color="var(--blue-color)" class="text-white mt-5">Upload Resume</v-btn> -->
@@ -93,7 +97,11 @@
               <img alt="arrow image" src="@/assets/images/down-arrow-top.png" />
             </div>
             <div class="">
-              <v-btn color="var(--red-color)" class="text-white mt-5 px-10" style="font-weight: 700"
+              <v-btn
+                @click="scanResume()"
+                color="var(--red-color)"
+                class="text-white mt-5 px-10"
+                style="font-weight: 700"
                 >Start Resume Scan ></v-btn
               >
               <!-- <p style="color: var(--blue-color);">Or see a sample resume scan ></p> -->
@@ -237,12 +245,19 @@
         </li>
       </ul>
     </v-row>
+
+    <!-- Loading component -->
+    <Loading :loading="scanning" />
   </div>
 </template>
 
 <script>
 import Nav from '@/components/Nav.vue'
 import { mdiLinkedin, mdiInstagram, mdiFacebook, mdiTwitter, mdiPaperclip } from '@mdi/js'
+import axios from 'axios'
+import { PDFDocumentProxy } from 'pdfjs-dist'
+import { api } from '../api'
+import Loading from '../components/Loading.vue'
 
 export default {
   data() {
@@ -251,11 +266,17 @@ export default {
       mdiInstagram,
       mdiFacebook,
       mdiTwitter,
-      resumesScanned: 468532
+      resumesScanned: 468532,
+      resumeFile: null,
+      binaryString: '',
+      jobTitle: null,
+      industry: null,
+      jobDescription: null,
+      scanning: false,
     }
   },
   components: {
-    Nav
+    Nav, Loading
   },
   mounted() {
     setInterval(() => {
@@ -265,6 +286,41 @@ export default {
   computed: {
     resumes() {
       return this.resumesScanned.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    }
+  },
+  methods: {
+    convertBinary() {
+      this.binaryString = this.$refs.fieldAdd.files[0]
+    },
+    async convertBinary2() {
+      let upf = this.resumeFile[0]
+      let uint8Array = new Uint8Array(await upf.arrayBuffer())
+      // const textDecoder = new TextDecoder();
+      // this.binaryString = textDecoder.decode(uint8Array);
+      // this.binaryString = String.fromCharCode(...uint8Array);
+      // this.binaryString = String.fromCharCode.apply(null, uint8Array);
+      this.binaryString = uint8Array.reduce((data, byte) => data + String.fromCharCode(byte), '')
+    },
+    async scanResume() {
+      this.scanning = true;
+      const response = await api.scannedResumes(
+        this.binaryString,
+        this.jobTitle,
+        this.industry,
+        this.jobDescription
+      )
+      if (response) {
+        let resumeScore = response.data.score
+        let scorePercentage = Math.round(resumeScore * 100)
+        localStorage.setItem('resumeScorePercent', scorePercentage)
+
+        let weak = response.data.records.weakness
+        localStorage.setItem('weakness', weak)
+
+        this.scanning = false;
+      }
+
+      this.$router.push({ name: 'score' })
     }
   }
 }

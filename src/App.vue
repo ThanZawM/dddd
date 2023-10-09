@@ -1,6 +1,6 @@
 <template>
   <v-app style="background: #e8e9eb">
-    <Nav />
+    <Nav v-if="isLoginPage ? false : true" />
 
     <v-main :style="isScorePage ? 'background: var(--orange-color);' : ''">
       <!-- Your main content or router view goes here -->
@@ -11,7 +11,7 @@
       <span style="text-transform: uppercase;">&copy; 2023 <strong>Resume Scanner</strong>. All Rights Reserved.</span>
     </v-footer> -->
 
-    <Footer />
+    <Footer v-if="isLoginPage ? false : true" />
   </v-app>
 </template>
 
@@ -30,6 +30,11 @@ export default {
         this.$route.path == '/score' ||
         this.$route.path == '/contact' ||
         this.$route.path == '/about'
+      )
+    },
+    isLoginPage() {
+      return (
+        this.$route.name == 'login'
       )
     }
   }

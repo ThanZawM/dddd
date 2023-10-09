@@ -27,6 +27,7 @@
             <v-row>
               <v-col cols="12">
                 <v-text-field
+                  v-model="email"
                   class="custom-field"
                   prepend-inner-icon="mdi:mdi-email-outline"
                   label="Email"
@@ -37,6 +38,7 @@
               </v-col>
               <v-col cols="12">
                 <v-text-field
+                  v-model="password"
                   class="custom-field"
                   prepend-inner-icon="mdi:mdi-key"
                   label="Password"
@@ -66,8 +68,8 @@
                     v-if="isLogin"
                     color="blue-darken-1"
                     variant="outlined"
-                    @click="dialog = false"
                     class="mobileBtn"
+                    @click="doLogin(email, password)"
                     >Login</v-btn
                   >
                   <v-btn
@@ -89,9 +91,12 @@
 </template>
 
 <script>
+import { api } from '../api'
 export default {
   data: () => ({
     // activeColor: 'var(--blue-color)',
+    email: null,
+    password: null,
   }),
   props: {
     showDialog: Boolean,
@@ -119,6 +124,19 @@ export default {
     loginClick(val) {
       this.login = val
       this.$emit('loginClick', this.login)
+    },
+    async doLogin() {
+      const response = await api.logInGetToken(this.email, this.password);
+      console.log('respone 1233')
+      const token = response.data.access_token;
+      if(!token) {
+        alert(response.data.detail)
+      } else {
+        localStorage.setItem('login-token', token);
+      
+      this.$router.push({ name: 'home' })
+      }
+      this.close();
     }
   }
 }

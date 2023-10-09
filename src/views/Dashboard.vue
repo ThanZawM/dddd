@@ -100,10 +100,16 @@
 <script>
 import VueApexCharts from 'vue3-apexcharts'
 import Price from '../components/Price.vue'
+import {api} from '../api'
+import axios from 'axios'
 
 export default {
+  mounted(){
+    this.getResumes();
+  },
   data() {
     return {
+      urs: null,
       selectedItem: null,
       hoveredItem: null,
       menuItems: [
@@ -113,19 +119,20 @@ export default {
         { title: 'Billing', icon: 'mdi:mdi-currency-usd', rotate: false },
         { title: 'Privacy & Data Policy', icon: 'mdi:mdi-database-outline', rotate: false },
         { title: 'Delete My Account & Data', icon: 'mdi:mdi-delete-empty-outline', rotate: false },
-        { title: 'Log Out', icon: 'mdi:mdi-logout', rotate: true }
+        { title: 'Email', icon: 'mdi:mdi-email-outline', rotate: false },
+        // { title: 'Log Out', icon: 'mdi:mdi-logout', rotate: true }
       ],
       users: [
-        { id: 1, name: 'John', email: 'john@gmail.com', score: 60 },
-        { id: 2, name: 'Doe', email: 'doe@gmail.com', score: 70 },
-        { id: 3, name: 'Snow', email: 'snow@gmail.com', score: 50 },
-        { id: 4, name: 'Alex', email: 'alex@gmail.com', score: 75 },
+        { id: 1, name: 'Samira Hadid', email: 'samira@gmail.com', score: 61 },
+        { id: 2, name: 'Juliana Silva', email: 'juliana@gmail.com', score: 60 },
+        { id: 3, name: 'Kim Chun Hei', email: 'kim@gmail.com', score: 65 },
+        { id: 4, name: 'Olivia Wilson', email: 'olivia@gmail.com', score: 57 },
         { id: 5, name: 'Leo', email: 'leo@gmail.com', score: 66 },
         { id: 6, name: 'Bob', email: 'bob@gmail.com', score: 83 },
         { id: 7, name: 'Lisa', email: 'lisa@gmail.com', score: 45 },
-        { id: 8, name: 'Smith', email: 'smith@gmail.com', score: 85 },
+        { id: 8, name: 'Smith', email: 'smith@gmail.com', score: 75 },
         { id: 9, name: 'William', email: 'william@gmail.com', score: 55 },
-        { id: 10, name: 'Benjamin', email: 'benjamin@gmail.com', score: 90 }
+        { id: 10, name: 'Benjamin', email: 'benjamin@gmail.com', score: 71 }
       ],
       itemsPerPage: 5,
       headers: [
@@ -195,6 +202,11 @@ export default {
     },
     hideTooltip(item) {
       this.hoveredItem = null
+    },
+    async getResumes() {
+      const response = await api.getScannedResumes();
+      this.urs = response.data.data
+      console.log('users list' + this.urs[0])
     }
   },
   computed: {
