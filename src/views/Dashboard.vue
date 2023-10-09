@@ -35,7 +35,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    <!-- Main Content -->
+    <!-- Main Contents -->
     <v-main>
       <h1 style="margin-left: 12px">Dashboard</h1>
       <v-container fluid v-if="selectedItem == null ? true : selectedItem.title == 'Dashboard'">
